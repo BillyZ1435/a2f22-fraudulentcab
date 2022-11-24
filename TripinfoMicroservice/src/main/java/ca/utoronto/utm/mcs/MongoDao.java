@@ -15,7 +15,14 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 
+import com.mongodb.util.JSON;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import io.github.cdimascio.dotenv.Dotenv;
+import static com.mongodb.client.model.Filters.eq;
 
 
 public class MongoDao {
@@ -68,6 +75,34 @@ public class MongoDao {
 		return null;
 	}
 
+	public JSONArray getDriverTrip(String uid) {
+
+		try {
+				FindIterable<Document> docs = this.collection.find(eq("driver", uid));
+				JSONArray trips = new JSONArray();
+				int size = 0;
+				for(Document doc : docs){
+					size++;
+					JSONObject trip = new JSONObject();
+					trip.put("_id", doc.get("_id"));
+					trip.put("distance", doc.get("distance"));
+					trip.put("startTime", doc.get("startTime"));
+					trip.put("endTime", doc.get("endTime"));
+					trip.put("timeElapsed", doc.get("timeElapsed"));
+					trip.put("passenger", doc.get("passenger"));
+					trip.put("driverPayout", doc.get("driverPayout"));
+					trips.put(trip);
+				}
+				if(size == 0){
+					return null;
+				}
+				return trips;
+		} catch (Exception e) {
+				System.out.println("Error occurred");
+		}
+		return null;
+	}
+
 	//public String getTripId(String dUid, String pUid, int startTime )
 	public boolean extraInfo(ObjectId _id, int dist, int endTime, String timeElapsed, double discount, double totalCost, double driverPayout){
 		Document query = new Document().append("_id", _id);
@@ -92,5 +127,32 @@ public class MongoDao {
 		return false;
 	}
 
-	
+	public JSONArray getPassengerTrip(String uid) {
+
+		try {
+				FindIterable<Document> docs = this.collection.find(eq("passenger", uid));
+				JSONArray trips = new JSONArray();
+				int size = 0;
+				for(Document doc : docs){
+					size++;
+					JSONObject trip = new JSONObject();
+					trip.put("_id", doc.get("_id"));
+					trip.put("distance", doc.get("distance"));
+					trip.put("totalCost", doc.get("totalCost"));
+					trip.put("discount", doc.get("discount"));
+					trip.put("startTime", doc.get("startTime"));
+					trip.put("endTime", doc.get("endTime"));
+					trip.put("timeElapsed", doc.get("timeElapsed"));
+					trip.put("driver", doc.get("driver"));
+					trips.put(trip);
+				}
+				if(size == 0){
+					return null;
+				}
+				return trips;
+		} catch (Exception e) {
+				System.out.println("Error occurred");
+		}
+		return null;
+	}
 }

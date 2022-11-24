@@ -12,7 +12,8 @@ public class App {
         // TODO: Add server contexts here. Do not set executors for the server, you shouldn't need them.
         server.createContext("/trip/confirm", new Confirm());
         server.createContext("/trip/", new Trip());
-
+        server.createContext("/trip/driver/", new Driver());
+        server.createContext("/trip/passenger/", new Passenger());
         server.start();
         System.out.printf("Server started on port %d...\n", PORT);
     }
