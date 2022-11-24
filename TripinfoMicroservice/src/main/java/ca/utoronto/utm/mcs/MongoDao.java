@@ -70,8 +70,6 @@ public class MongoDao {
 					JSONObject trip = new JSONObject();
 					trip.put("_id", doc.get("_id"));
 					trip.put("distance", doc.get("distance"));
-					trip.put("totalCost", doc.get("totalCost"));
-					trip.put("discount", doc.get("discount"));
 					trip.put("startTime", doc.get("startTime"));
 					trip.put("endTime", doc.get("endTime"));
 					trip.put("timeElapsed", doc.get("timeElapsed"));
