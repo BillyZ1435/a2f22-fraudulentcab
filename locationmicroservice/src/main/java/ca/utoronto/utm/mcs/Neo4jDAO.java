@@ -21,6 +21,16 @@ public class Neo4jDAO {
 
     // *** implement database operations here *** //
 
+    public Result getNearby(double longitude, double latitude, int radius){
+        String query = "MATCH (n: user {is_driver: true })\n" +
+                "WITH point({longitude: n.longitude, latitude: n.latitude}) AS p1, point({longitude: %f, latitude: %f}) AS p2, n.longitude AS longitude, n.latitude AS latitude, n.street AS street, n.uid as uid\n" +
+                "WHERE point.distance(p1, p2)/1000<%d\n" +
+                "RETURN point.distance(p1, p2)/1000 AS dist, longitude, latitude, street, uid";
+        query = String.format(query, longitude, latitude, radius);
+        return this.session.run(query);
+    }
+
+
     public Result getPath(String roadname1, String roadname2){
         String query = "MATCH (r1:road {name: '%s'}), (r2:road {name: '%s'}), p = shortestPath((r1)-[r:ROUTE_TO*]->(r2)) RETURN nodes(p), relationships(p)";
         query = String.format(query, roadname1, roadname2);
@@ -28,6 +38,7 @@ public class Neo4jDAO {
         System.out.println("query ran");
         return temp;
     }
+
 
     public Result addUser(String uid, boolean is_driver) {
         String query = "CREATE (n: user {uid: '%s', is_driver: %b, longitude: 0, latitude: 0, street: ''}) RETURN n";
