@@ -76,7 +76,7 @@ public class MongoDao {
 					trip.put("startTime", doc.get("startTime"));
 					trip.put("endTime", doc.get("endTime"));
 					trip.put("timeElapsed", doc.get("timeElapsed"));
-					trip.put("driver", doc.get("driver"));
+					trip.put("passenger", doc.get("passenger"));
 					trips.put(trip);
 				}
 				return trips;
