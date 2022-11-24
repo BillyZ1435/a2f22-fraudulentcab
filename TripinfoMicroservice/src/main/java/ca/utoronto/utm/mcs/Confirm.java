@@ -2,10 +2,7 @@ package ca.utoronto.utm.mcs;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
-
-import com.mongodb.client.FindIterable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
