@@ -63,11 +63,10 @@ public class MongoDao {
 
 		try {
 				FindIterable<Document> docs = this.collection.find(eq("driver", uid));
-				if(docs == null){
-					return null;
-				}
 				JSONArray trips = new JSONArray();
+				int size = 0;
 				for(Document doc : docs){
+					size++;
 					JSONObject trip = new JSONObject();
 					trip.put("_id", doc.get("_id"));
 					trip.put("distance", doc.get("distance"));
@@ -77,7 +76,11 @@ public class MongoDao {
 					trip.put("endTime", doc.get("endTime"));
 					trip.put("timeElapsed", doc.get("timeElapsed"));
 					trip.put("passenger", doc.get("passenger"));
+					trip.put("driverPayout", doc.get("driverPayout"));
 					trips.put(trip);
+				}
+				if(size == 0){
+					return null;
 				}
 				return trips;
 		} catch (Exception e) {
