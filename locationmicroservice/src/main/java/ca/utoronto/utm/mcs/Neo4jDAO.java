@@ -30,15 +30,11 @@ public class Neo4jDAO {
         return this.session.run(query);
     }
 
-
     public Result getPath(String roadname1, String roadname2){
         String query = "MATCH (r1:road {name: '%s'}), (r2:road {name: '%s'}), p = shortestPath((r1)-[r:ROUTE_TO*]->(r2)) RETURN nodes(p), relationships(p)";
         query = String.format(query, roadname1, roadname2);
-        Result temp = this.session.run(query);
-        System.out.println("query ran");
-        return temp;
+        return this.session.run(query);
     }
-
 
     public Result addUser(String uid, boolean is_driver) {
         String query = "CREATE (n: user {uid: '%s', is_driver: %b, longitude: 0, latitude: 0, street: ''}) RETURN n";

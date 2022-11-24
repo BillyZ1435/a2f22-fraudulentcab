@@ -1,13 +1,10 @@
 package ca.utoronto.utm.mcs;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.json.*;
 import com.sun.net.httpserver.HttpExchange;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.internal.shaded.io.netty.handler.codec.AsciiHeadersEncoder.NewlineType;
 
 public class Navigation extends Endpoint {
     
