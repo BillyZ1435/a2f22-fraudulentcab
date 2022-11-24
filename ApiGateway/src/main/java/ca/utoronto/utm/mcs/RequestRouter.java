@@ -80,6 +80,7 @@ public class RequestRouter implements HttpHandler {
                 .uri(URI.create("http://tripinfomicroservice:8000"+r.getRequestURI()))
                 .method(method, HttpRequest.BodyPublishers.ofString(Utils.convert(r.getRequestBody())))
                 .build();
+                System.out.println(r.getRequestURI());
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
@@ -94,6 +95,7 @@ public class RequestRouter implements HttpHandler {
 				.uri(URI.create("http://locationmicroservice:8000"+r.getRequestURI()))
 				.method(method, HttpRequest.BodyPublishers.ofString(Utils.convert(r.getRequestBody())))
 				.build();
+                System.out.println(r.getRequestURI());
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());

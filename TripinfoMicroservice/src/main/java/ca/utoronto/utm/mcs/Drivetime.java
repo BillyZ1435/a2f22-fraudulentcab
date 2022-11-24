@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.invoke.TypeDescriptor;
 
 public class Drivetime extends Endpoint {
     final static String API_URL = "http://locationmicroservice:8000";
@@ -45,8 +44,9 @@ public class Drivetime extends Endpoint {
             if(result != null){
                 String driver = result.get("driver").toString();
                 String passenger = result.get("passenger").toString();
-                
+                System.out.println("Sending req");
                 HttpResponse<String> res = sendRequest("/location/navigation/"+driver+"?passengerUid="+passenger, "GET", new JSONObject().toString());
+                System.out.println("Got res");
                 if(res.statusCode() == 200){
                     JSONObject body = new JSONObject(res.body());
                     JSONObject data = new JSONObject(body.get("data"));
@@ -76,7 +76,7 @@ public class Drivetime extends Endpoint {
                 .uri(URI.create(API_URL + endpoint))
                 .method(method, HttpRequest.BodyPublishers.ofString(reqBody))
                 .build();
-
+        System.out.println(request.toString());
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
