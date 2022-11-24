@@ -1,12 +1,21 @@
 package ca.utoronto.utm.mcs;
 
+import static com.mongodb.client.model.Filters.eq;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.util.JSON;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 
+import com.mongodb.util.JSON;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
@@ -14,6 +23,7 @@ import org.json.JSONObject;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import static com.mongodb.client.model.Filters.eq;
+
 
 public class MongoDao {
 
@@ -49,6 +59,12 @@ public class MongoDao {
 		doc.put("driver", dUid);
 		doc.put("passenger", pUid);
 		doc.put("startTime", startTime);
+		doc.put("distance", null);
+		doc.put("endTime", null);
+		doc.put("timeElapsed", null);
+		doc.put("discount", null);
+		doc.put("totalCost", null);
+		doc.put("driverPayout", null);
 
 		try {
 				this.collection.insertOne(doc);
@@ -88,8 +104,30 @@ public class MongoDao {
 	}
 
 	//public String getTripId(String dUid, String pUid, int startTime )
+	public boolean extraInfo(ObjectId _id, int dist, int endTime, String timeElapsed, double discount, double totalCost, double driverPayout){
+		Document query = new Document().append("_id", _id);
+		
+		Bson updates = Updates.combine(
+			Updates.set("distance", dist),
+			Updates.set("endTime", endTime),
+			Updates.set("timeElapsed", timeElapsed),
+			Updates.set("discount", discount),
+			Updates.set("totalCost", totalCost),
+			Updates.set("driverPayout", driverPayout)
+		);
 
-	public JSONArray getDriverTrip(String uid) {
+		try{
+			UpdateResult result = this.collection.updateOne(query, updates);
+			if(result.getModifiedCount() == 1){
+				return true;
+			}
+		}catch (Exception e){
+			System.out.println("Error occurred");
+		}
+		return false;
+	}
+
+	public JSONArray getPassengerTrip(String uid) {
 
 		try {
 				FindIterable<Document> docs = this.collection.find(eq("passenger", uid));
@@ -117,5 +155,4 @@ public class MongoDao {
 		}
 		return null;
 	}
-
 }
