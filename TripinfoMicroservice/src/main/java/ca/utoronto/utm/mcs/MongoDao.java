@@ -8,8 +8,11 @@ import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import static com.mongodb.client.model.Filters.eq;
 
 public class MongoDao {
 
@@ -56,5 +59,32 @@ public class MongoDao {
 	}
 
 	//public String getTripId(String dUid, String pUid, int startTime )
+
+	public JSONArray getDriverTrip(String uid) {
+
+		try {
+				FindIterable<Document> docs = this.collection.find(eq("passenger", uid));
+				if(docs == null){
+					return null;
+				}
+				JSONArray trips = new JSONArray();
+				for(Document doc : docs){
+					JSONObject trip = new JSONObject();
+					trip.put("_id", doc.get("_id"));
+					trip.put("distance", doc.get("distance"));
+					trip.put("totalCost", doc.get("totalCost"));
+					trip.put("discount", doc.get("discount"));
+					trip.put("startTime", doc.get("startTime"));
+					trip.put("endTime", doc.get("endTime"));
+					trip.put("timeElapsed", doc.get("timeElapsed"));
+					trip.put("driver", doc.get("driver"));
+					trips.put(trip);
+				}
+				return trips;
+		} catch (Exception e) {
+				System.out.println("Error occurred");
+		}
+		return null;
+	}
 
 }
