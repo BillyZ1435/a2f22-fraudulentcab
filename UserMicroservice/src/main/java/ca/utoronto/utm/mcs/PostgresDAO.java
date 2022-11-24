@@ -23,13 +23,21 @@ public class PostgresDAO {
 	}
 
 	// *** implement database operations here *** //
-
+    public void addUser(String name, String email, String password) throws SQLException{
+        String query = "INSERT INTO users(prefer_name, email, password, rides) VALUES (\'%s\', \'%s\', \'%s\', 0)";
+        query = String.format(query, name, email, password);
+        this.st.executeUpdate(query);
+    }
     public ResultSet getUsersFromUid(int uid) throws SQLException {
         String query = "SELECT * FROM users WHERE uid = %d";
         query = String.format(query, uid);
         return this.st.executeQuery(query);
     }
-
+    public ResultSet getUserFromEmail(String email) throws SQLException {
+        String query = "SELECT * FROM users WHERE email = '%s'";
+        query = String.format(query, email);
+        return this.st.executeQuery(query);
+    }
     public ResultSet getUserData(int uid) throws SQLException {
         String query = "SELECT prefer_name as name, email, rides, isdriver FROM users WHERE uid = %d";
         query = String.format(query, uid);
