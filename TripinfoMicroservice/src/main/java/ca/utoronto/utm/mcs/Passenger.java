@@ -42,5 +42,4 @@ public class Passenger extends Endpoint {
             this.sendStatus(r, 500);
         }
     }
-    }
 }
