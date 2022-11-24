@@ -12,11 +12,16 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 
 import com.sun.net.httpserver.HttpExchange;
+
+import org.bson.types.ObjectId;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.lang.invoke.TypeDescriptor;
 
 public class Drivetime extends Endpoint {
-
+    final static String API_URL = "http://locationmicroservice:8000";
     /**
      * GET /trip/driverTime/:_id
      * @param _id
@@ -28,6 +33,50 @@ public class Drivetime extends Endpoint {
 
     @Override
     public void handleGet(HttpExchange r) throws IOException, JSONException {
-        // TODO
+        String[] params = r.getRequestURI().toString().split("/");
+        if (params.length != 4 || params[3].isEmpty()) {
+            this.sendStatus(r, 400);
+            return;
+        }
+
+        try{
+            ObjectId _id = new ObjectId(params[3]);
+            JSONObject result = this.dao.getDriverAndPass(_id);
+            if(result != null){
+                String driver = result.get("driver").toString();
+                String passenger = result.get("passenger").toString();
+                
+                HttpResponse<String> res = sendRequest("/location/navigation/"+driver+"?passengerUid="+passenger, "GET", new JSONObject().toString());
+                if(res.statusCode() == 200){
+                    JSONObject body = new JSONObject(res.body());
+                    JSONObject data = new JSONObject(body.get("data"));
+                    int time = Integer.parseInt(data.get("total_time").toString());
+
+                    JSONObject returnData = new JSONObject();
+                    returnData.put("arrival_time", time);
+                    JSONObject returnBody = new JSONObject();
+                    returnBody.put("data", returnData);
+                    returnBody.put("status", "OK");
+                    this.sendResponse(r, returnBody, 200);
+                }else{
+                    this.sendStatus(r, res.statusCode());
+                }
+            }else{
+                this.sendStatus(r, 404);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.sendStatus(r, 500);
+        }
+    }
+
+    private static HttpResponse<String> sendRequest(String endpoint, String method, String reqBody) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_URL + endpoint))
+                .method(method, HttpRequest.BodyPublishers.ofString(reqBody))
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
