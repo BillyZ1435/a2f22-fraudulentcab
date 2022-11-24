@@ -60,6 +60,7 @@ public class Register extends Endpoint {
             resultHasNext = emailCheckSet.next();
             if(resultHasNext){
                 this.sendStatus(r, 400);
+                return;
             }
         }
         catch (SQLException e) {
