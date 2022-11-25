@@ -1,12 +1,23 @@
 package ca.utoronto.utm.mcs;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import org.bson.types.ObjectId;
 /**
  * Please write your tests in this class. 
  */
- 
+
 public class AppTest {
     final static String API_URL = "http://localhost:8004";
     public static MongoDao dao = new MongoDao();
@@ -42,7 +53,7 @@ public class AppTest {
         req.put("uid", "234234");
         req.put("is_driver", false);
         confirmRes = sendRequest("/location/user", "PUT", req.toString());
-        
+
         /**
          * PUT /location/road/
          * @body roadName, hasTraffic
@@ -166,7 +177,6 @@ public class AppTest {
      * trip is done. 
      */
 
-     
     @Test
     public void patchTripPass()  throws JSONException, IOException, InterruptedException {
         JSONObject req = new JSONObject();
@@ -198,5 +208,55 @@ public class AppTest {
         JSONObject req = new JSONObject();
         HttpResponse<String> confirmRes = sendRequest("/trip/passenger/234234", "GET", req.toString());
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+
+    @Test
+    public void tripsForPassengerFail()  throws JSONException, IOException, InterruptedException {
+        JSONObject req = new JSONObject();
+        HttpResponse<String> confirmRes = sendRequest("/trip/passenger/", "GET", req.toString());
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
+    }
+
+    /**
+     * GET /trip/driver/:uid
+     * @param uid
+     * @return 200, 400, 404
+     * Get all trips driver with the given uid has.
+     */
+
+    @Test
+    public void tripsForDriverPass()  throws JSONException, IOException, InterruptedException {
+        JSONObject req = new JSONObject();
+        HttpResponse<String> confirmRes = sendRequest("/trip/driver/123123", "GET", req.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+
+    @Test
+    public void tripsForDriverFail()  throws JSONException, IOException, InterruptedException {
+        JSONObject req = new JSONObject();
+        HttpResponse<String> confirmRes = sendRequest("/trip/driver/", "GET", req.toString());
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
+    }
+
+    /**
+     * GET /trip/driverTime/:_id
+     * @param _id
+     * @return 200, 400, 404, 500
+     * Get time taken to get from driver to passenger on the trip with
+     * the given _id. Time should be obtained from navigation endpoint
+     * in location microservice.
+     */
+    @Test
+    public void driverTimePass()  throws JSONException, IOException, InterruptedException {
+        JSONObject req = new JSONObject();
+        HttpResponse<String> confirmRes = sendRequest("/trip/driverTime/"+_id, "GET", req.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+
+    @Test
+    public void driverTimeFail()  throws JSONException, IOException, InterruptedException {
+        JSONObject req = new JSONObject();
+        HttpResponse<String> confirmRes = sendRequest("/trip/driverTime/", "GET", req.toString());
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
     }
 }

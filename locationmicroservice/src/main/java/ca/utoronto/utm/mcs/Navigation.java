@@ -47,7 +47,6 @@ public class Navigation extends Endpoint {
 
                 //Check if users are driver and passenger 
                 boolean is_driver = driver.get("n").get("is_driver").asBoolean();
-                boolean is_driver2 = passenger.get("n").get("is_driver").asBoolean();
 
                 //Check if users' locations are valid(in DB)
                 String driverStreet = driver.get("n").get("street").asString();
@@ -55,8 +54,7 @@ public class Navigation extends Endpoint {
                 Result location1 = this.dao.getRoad(driverStreet);
                 Result location2 = this.dao.getRoad(passengerStreet);
 
-                if(!(is_driver && !is_driver2) || !location1.hasNext() || !location2.hasNext()){
-                    System.out.println(is_driver+", "+is_driver2+", "+location1.hasNext()+", "+location2.hasNext());
+                if(!is_driver || !location1.hasNext() || !location2.hasNext()){
                     this.sendStatus(r, 404);
                     return;
                 }
@@ -75,7 +73,6 @@ public class Navigation extends Endpoint {
                 //Look for route between them
                 Result pathExist = this.dao.getPath(driverStreet, passengerStreet);
                 if (!pathExist.hasNext()){
-                    System.out.println("No path");
                     this.sendStatus(r, 404);
                     return;
                 }
