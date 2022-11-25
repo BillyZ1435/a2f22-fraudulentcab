@@ -1,7 +1,11 @@
 package ca.utoronto.utm.mcs;
 
 import com.sun.net.httpserver.HttpExchange;
+
+import org.bson.types.ObjectId;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 public class Confirm extends Endpoint {
@@ -15,6 +19,26 @@ public class Confirm extends Endpoint {
 
     @Override
     public void handlePost(HttpExchange r) throws IOException, JSONException {
-        // TODO
+        JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
+        String fields[] = {"driver", "passenger", "startTime"};
+        Class<?> fieldClasses[] = {String.class, String.class, Integer.class};
+        if (!validateFields(body, fields, fieldClasses)) {
+            this.sendStatus(r, 400);
+            return;
+        }
+
+        String driver = body.getString("driver");
+        String passenger = body.getString("passenger");
+        int startTime = body.getInt("startTime");
+
+        ObjectId result = this.dao.addTrip(driver, passenger, startTime);
+        if(result == null){
+            this.sendStatus(r, 500);
+            return;
+        }
+        JSONObject res = new JSONObject();
+        res.put("status", "OK");
+        res.put("data", result);
+        this.sendResponse(r, res, 200);
     }
 }
