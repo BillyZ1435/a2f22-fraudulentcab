@@ -1,11 +1,9 @@
 package ca.utoronto.utm.mcs;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
-import org.bson.Document;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -128,18 +126,16 @@ public class AppTest {
         JSONObject req = new JSONObject();
         req.put("uid", uid);
         req.put("radius", radius);
-        HttpResponse<String> confirmRes = sendRequest("/trip/reqest", "POST", req.toString());
+        HttpResponse<String> confirmRes = sendRequest("/trip/request", "POST", req.toString());
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
 
     @Test
     public void tripRequestFail()  throws JSONException, IOException, InterruptedException {
-        String uid = "";
         int radius = 1;
         JSONObject req = new JSONObject();
-        req.put("uid", uid);
         req.put("radius", radius);
-        HttpResponse<String> confirmRes = sendRequest("/trip/reqest", "POST", req.toString());
+        HttpResponse<String> confirmRes = sendRequest("/trip/request", "POST", req.toString());
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
     }
 
@@ -188,10 +184,11 @@ public class AppTest {
         req.put("endTime", 123123132);
         req.put("timeElapsed", "00:15:00");
         req.put("totalCost", 14.02);
+        req.put("discount", 0.2);
+        req.put("driverPayout", 10.2);
         HttpResponse<String> confirmRes = sendRequest("/trip/"+_id, "PATCH", req.toString());
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
-
     @Test
     public void patchTripFail()  throws JSONException, IOException, InterruptedException {
         JSONObject req = new JSONObject();
