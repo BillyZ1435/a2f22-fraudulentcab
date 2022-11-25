@@ -19,7 +19,7 @@ import org.bson.types.ObjectId;
  */
 
 public class AppTest {
-    final static String API_URL = "http://localhost:8004";
+    final static String API_URL = "http://apigateway:8000";
     public static MongoDao dao = new MongoDao();
     public static ObjectId _id;
 

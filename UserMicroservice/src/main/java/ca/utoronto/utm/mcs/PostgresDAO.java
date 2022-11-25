@@ -73,4 +73,9 @@ public class PostgresDAO {
             this.st.execute(query);
         }
     }
+    public void deleteUser(String email) throws SQLException{
+        String query = "DELETE FROM users WHERE email='%s';";
+        query = String.format(query, email);
+        this.st.execute(query);
+    }
 }
