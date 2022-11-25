@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ import java.sql.SQLException;
  */
  
 public class AppTest {
-    final static String API_URL = "http://localhost:8004";
+    final static String API_URL = "http://apigateway:8000";
 
     public static PostgresDAO dao = new PostgresDAO();
     private static HttpResponse<String> sendRequest(String endpoint, String method, String reqBody) throws IOException, InterruptedException {
@@ -36,6 +37,11 @@ public class AppTest {
     @BeforeAll
     public static void init() throws SQLException {
         dao.addUser("doe", "doe@gmail.com", "doe123");
+    }
+    @AfterAll
+    public static void after() throws SQLException {
+        dao.deleteUser("john@gmail.com");
+        dao.deleteUser("doe@gmail.com");
     }
     @Test
     public void RegisterPass() throws IOException, InterruptedException, JSONException {
@@ -75,4 +81,6 @@ public class AppTest {
         HttpResponse<String> confirmRes = sendRequest("/user/login", "POST", req.toString());
         assertEquals(HttpURLConnection.HTTP_UNAUTHORIZED, confirmRes.statusCode());
     }
+
+
 }
