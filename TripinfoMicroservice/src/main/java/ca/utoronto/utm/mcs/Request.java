@@ -33,7 +33,6 @@ public class Request extends Endpoint {
 
     @Override
     public void handlePost(HttpExchange r) throws IOException,JSONException{
-        System.out.println("Req received");
         String[] params = r.getRequestURI().toString().split("/");
         if (params.length != 3) {
             this.sendStatus(r, 400);
