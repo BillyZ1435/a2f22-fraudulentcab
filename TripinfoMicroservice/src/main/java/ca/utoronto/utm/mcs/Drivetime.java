@@ -49,7 +49,9 @@ public class Drivetime extends Endpoint {
                 System.out.println("Got res");
                 if(res.statusCode() == 200){
                     JSONObject body = new JSONObject(res.body());
-                    JSONObject data = new JSONObject(body.get("data"));
+                    System.out.println(body.toString());
+                    JSONObject data = new JSONObject(body.get("data").toString());
+                    System.out.println(data.toString());
                     int time = Integer.parseInt(data.get("total_time").toString());
 
                     JSONObject returnData = new JSONObject();

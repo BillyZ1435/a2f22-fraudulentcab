@@ -116,7 +116,7 @@ public class MongoDao {
 	}
 
 	//public String getTripId(String dUid, String pUid, int startTime )
-	public boolean extraInfo(ObjectId _id, int dist, int endTime, String timeElapsed, double discount, double totalCost, double driverPayout){
+	public boolean addExtraInfo(ObjectId _id, int dist, int endTime, String timeElapsed, double discount, double totalCost, double driverPayout){
 		Document query = new Document().append("_id", _id);
 		
 		Bson updates = Updates.combine(
@@ -140,7 +140,6 @@ public class MongoDao {
 	}
 
 	public JSONArray getPassengerTrip(String uid) {
-
 		try {
 				FindIterable<Document> docs = this.collection.find(eq("passenger", uid));
 				JSONArray trips = new JSONArray();

@@ -26,7 +26,7 @@ public class Passenger extends Endpoint {
 
         try {
             String uid = params[3];
-            JSONArray result = this.dao.getDriverTrip(uid);
+            JSONArray result = this.dao.getPassengerTrip(uid);
             if (result != null) {
                 JSONObject res = new JSONObject();
                 res.put("status", "OK");
