@@ -46,7 +46,7 @@ public class Trip extends Endpoint {
 
         try {
             ObjectId _id = new ObjectId(params[2]);
-            Boolean res = this.dao.extraInfo(_id, 
+            Boolean res = this.dao.addExtraInfo(_id, 
                 body.getInt("distance"), 
                 body.getInt("endTime"), 
                 body.getString("timeElapsed"), 
